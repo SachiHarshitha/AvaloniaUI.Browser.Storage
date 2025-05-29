@@ -1,0 +1,104 @@
+<UserControl
+    x:Class="AvaloniaUI.Browser.Storage.Demo.Views.MainView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:AvaloniaUI.Browser.Storage.Demo.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:MainViewModel"
+    mc:Ignorable="d">
+	<Design.DataContext>
+		<!--
+            This only sets the DataContext for the previewer in an IDE,
+            to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs)
+        -->
+		<vm:MainViewModel />
+	</Design.DataContext>
+	<DockPanel HorizontalAlignment="Center" VerticalAlignment="Stretch">
+		<TextBlock
+            Height="50"
+            DockPanel.Dock="Top"
+            Text="{Binding Greeting}" />
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<DockPanel Grid.Column="0" Margin="10">
+				<Label
+                    Content="Session Storage"
+                    DockPanel.Dock="Top"
+                    FontSize="20"
+                    FontWeight="DemiBold" />
+				<StackPanel VerticalAlignment="Center">
+
+					<StackPanel Orientation="Horizontal">
+						<Label VerticalAlignment="Center" Content="Value To Set:" />
+						<TextBox
+                            Width="200"
+                            Height="30"
+                            Margin="5,0,0,0"
+                            Text="{Binding ValueToSetSessionStorage}" />
+						<Button
+                            Margin="5,0,0,0"
+                            Command="{Binding SessionStorageCommand}"
+                            Content="Store Value"
+                            DockPanel.Dock="Bottom" />
+					</StackPanel>
+					<StackPanel
+                        Height="50"
+                        VerticalAlignment="Center"
+                        DockPanel.Dock="Left"
+                        Orientation="Horizontal">
+						<Label VerticalAlignment="Center" Content="Value From:" />
+						<Label
+                            Width="200"
+                            Height="30"
+                            Margin="5,0,0,0"
+                            Content="{Binding ValueFromSessionStorage}" />
+					</StackPanel>
+				</StackPanel>
+			</DockPanel>
+			<DockPanel Grid.Column="1" Margin="10">
+				<Label
+                    Content="Local Storage"
+                    DockPanel.Dock="Top"
+                    FontSize="20"
+                    FontWeight="DemiBold" />
+				<StackPanel VerticalAlignment="Center">
+					<StackPanel
+                        Height="50"
+                        VerticalAlignment="Center"
+                        DockPanel.Dock="Left"
+                        Orientation="Horizontal">
+						<Label VerticalAlignment="Center" Content="Value To Set:" />
+						<TextBox
+                            Width="200"
+                            Height="30"
+                            Margin="5,0,0,0"
+                            Text="{Binding ValueToSetLocalStorage}" />
+						<Button
+                            Margin="5,0,0,0"
+                            Command="{Binding LocalStorageCommand}"
+                            Content="Store Value"
+                            DockPanel.Dock="Bottom" />
+					</StackPanel>
+					<StackPanel
+                        Height="50"
+                        VerticalAlignment="Center"
+                        DockPanel.Dock="Bottom"
+                        Orientation="Horizontal">
+						<Label VerticalAlignment="Center" Content="Value From:" />
+						<Label
+                            Width="200"
+                            Height="30"
+                            Margin="5,0,0,0"
+                            Content="{Binding ValueFromLocalStorage}" />
+					</StackPanel>
+				</StackPanel>
+			</DockPanel>
+		</Grid>
+	</DockPanel>
+</UserControl>
