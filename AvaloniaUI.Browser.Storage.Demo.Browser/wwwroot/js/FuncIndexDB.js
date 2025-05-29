@@ -1,4 +1,4 @@
-﻿async function openDb(dbName, storeName) {
+﻿export async function openDb(dbName, storeName) {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(dbName, 1);
 
