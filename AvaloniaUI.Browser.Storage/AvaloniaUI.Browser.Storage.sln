@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36127.28 d17.14
+VisualStudioVersion = 17.14.36127.28
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaUI.Browser.Storage", "AvaloniaUI.Browser.Storage.csproj", "{A501A531-6B05-4E74-B39D-122A5D9D5042}"
 EndProject
@@ -10,6 +10,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaUI.Browser.Storage.Demo.Browser", "..\AvaloniaUI.Browser.Storage.Demo.Browser\AvaloniaUI.Browser.Storage.Demo.Browser.csproj", "{6B6D49E8-1182-A18A-8488-1BB3BA51C4C0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaUI.Browser.Storage.Demo.Desktop", "..\AvaloniaUI.Browser.Storage.Demo.Desktop\AvaloniaUI.Browser.Storage.Demo.Desktop.csproj", "{994BC021-518D-4172-EB53-328538B29BD8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{84D27F74-D2BA-6C25-2661-968F101900D9}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

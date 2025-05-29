@@ -17,16 +17,33 @@
 		<vm:MainViewModel />
 	</Design.DataContext>
 	<DockPanel HorizontalAlignment="Center" VerticalAlignment="Stretch">
-		<TextBlock
-            Height="50"
-            DockPanel.Dock="Top"
-            Text="{Binding Greeting}" />
-		<Grid>
+		<StackPanel Background="MediumSlateBlue" DockPanel.Dock="Top">
+			<TextBlock
+                Height="50"
+                Margin="10,20,10,0"
+                HorizontalAlignment="Center"
+                FontSize="30"
+                FontWeight="ExtraBold"
+                Text="{Binding Greeting}" />
+			<TextBlock
+                Margin="30,10"
+                HorizontalAlignment="Right"
+                Text="By Sachith Liyanagama" />
+		</StackPanel>
+
+		<Grid Margin="20,0">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
-			<DockPanel Grid.Column="0" Margin="10">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			<DockPanel
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="10">
 				<Label
                     Content="Session Storage"
                     DockPanel.Dock="Top"
@@ -44,7 +61,7 @@
 						<Button
                             Margin="5,0,0,0"
                             Command="{Binding SessionStorageCommand}"
-                            Content="Store Value"
+                            Content="Store"
                             DockPanel.Dock="Bottom" />
 					</StackPanel>
 					<StackPanel
@@ -52,7 +69,7 @@
                         VerticalAlignment="Center"
                         DockPanel.Dock="Left"
                         Orientation="Horizontal">
-						<Label VerticalAlignment="Center" Content="Value From:" />
+						<Label VerticalAlignment="Center" Content="Value From Storage:" />
 						<Label
                             Width="200"
                             Height="30"
@@ -61,7 +78,10 @@
 					</StackPanel>
 				</StackPanel>
 			</DockPanel>
-			<DockPanel Grid.Column="1" Margin="10">
+			<DockPanel
+                Grid.Row="0"
+                Grid.Column="1"
+                Margin="10">
 				<Label
                     Content="Local Storage"
                     DockPanel.Dock="Top"
@@ -82,7 +102,7 @@
 						<Button
                             Margin="5,0,0,0"
                             Command="{Binding LocalStorageCommand}"
-                            Content="Store Value"
+                            Content="Store"
                             DockPanel.Dock="Bottom" />
 					</StackPanel>
 					<StackPanel
@@ -90,7 +110,7 @@
                         VerticalAlignment="Center"
                         DockPanel.Dock="Bottom"
                         Orientation="Horizontal">
-						<Label VerticalAlignment="Center" Content="Value From:" />
+						<Label VerticalAlignment="Center" Content="Value From  Storage:" />
 						<Label
                             Width="200"
                             Height="30"
@@ -99,6 +119,85 @@
 					</StackPanel>
 				</StackPanel>
 			</DockPanel>
+
+			<Grid Grid.Row="1" Grid.Column="0">
+				<Grid.RowDefinitions>
+					<RowDefinition />
+					<RowDefinition />
+					<RowDefinition />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+				<Separator DockPanel.Dock="Top" />
+				<DockPanel
+                    Grid.Row="1"
+                    HorizontalAlignment="Stretch"
+                    DockPanel.Dock="Top">
+					<Label HorizontalAlignment="Left" Content="Entries" />
+					<Button
+                        HorizontalAlignment="Right"
+                        Command="{Binding GetSessionStorageEntries}"
+                        Content="Reload" />
+				</DockPanel>
+				<DataGrid Grid.Row="2" ItemsSource="{Binding SessionStorageEntries}">
+					<DataGrid.Columns>
+						<DataGridTextColumn
+                            Binding="{Binding Item1}"
+                            Header="Key"
+                            IsReadOnly="True" />
+						<DataGridTextColumn
+                            Binding="{Binding Item2}"
+                            Header="Value"
+                            IsReadOnly="True" />
+					</DataGrid.Columns>
+				</DataGrid>
+				<StackPanel Grid.Row="3" DockPanel.Dock="Bottom">
+					<Separator DockPanel.Dock="Top" />
+					<Button
+                        Margin="5,0,0,0"
+                        Command="{Binding ClearSessionStorageAsync}"
+                        Content="Clear Storage"
+                        DockPanel.Dock="Bottom" />
+				</StackPanel>
+			</Grid>
+			<Grid Grid.Row="1" Grid.Column="1">
+				<Grid.RowDefinitions>
+					<RowDefinition />
+					<RowDefinition />
+					<RowDefinition />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+				<Separator DockPanel.Dock="Top" />
+				<DockPanel
+                    Grid.Row="1"
+                    HorizontalAlignment="Stretch"
+                    DockPanel.Dock="Top">
+					<Label HorizontalAlignment="Left" Content="Entries" />
+					<Button
+                        HorizontalAlignment="Right"
+                        Command="{Binding GetLocalStorageEntries}"
+                        Content="Reload" />
+				</DockPanel>
+				<DataGrid Grid.Row="2" ItemsSource="{Binding LocalStorageEntries}">
+					<DataGrid.Columns>
+						<DataGridTextColumn
+                            Binding="{Binding Item1}"
+                            Header="Key"
+                            IsReadOnly="True" />
+						<DataGridTextColumn
+                            Binding="{Binding Item2}"
+                            Header="Value"
+                            IsReadOnly="True" />
+					</DataGrid.Columns>
+				</DataGrid>
+				<StackPanel Grid.Row="3" DockPanel.Dock="Bottom">
+					<Separator DockPanel.Dock="Top" />
+					<Button
+                        Margin="5,0,0,0"
+                        Command="{Binding ClearLocalStorageAsync}"
+                        Content="Clear Storage"
+                        DockPanel.Dock="Bottom" />
+				</StackPanel>
+			</Grid>
 		</Grid>
 	</DockPanel>
 </UserControl>
