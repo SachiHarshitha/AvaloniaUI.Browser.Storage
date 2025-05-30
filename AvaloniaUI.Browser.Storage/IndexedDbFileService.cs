@@ -10,21 +10,21 @@ public partial class IndexedDbFileService
         JSHost.ImportAsync("FuncIndexedDbFile ", "./js/FuncIndexedDbFile.js"));
 
     [JSImport("saveFileToIndexedDBFromBase64", "FuncIndexedDbFile")]
-    internal static partial Task SaveFileFromBase64Async(string dbName, string storeName, string key, string base64String, string mimeType);
+    internal static partial Task SaveFileFromBase64Async(string dbName, int dbVersion, string storeName, string key, string base64String, string mimeType);
 
-    public static async Task SaveFileAsync(string dbName, string storeName, string key, byte[] data, string mimeType)
+    public static async Task SaveFileAsync(string dbName, int dbVersion, string storeName, string key, byte[] data, string mimeType)
     {
         // Convert byte array to Base64 string
         var base64String = Convert.ToBase64String(data);
-        await SaveFileFromBase64Async(dbName, storeName, key, base64String, mimeType);
+        await SaveFileFromBase64Async(dbName, dbVersion, storeName, key, base64String, mimeType);
     }
 
     [JSImport("getFileFromIndexedDBAsBase64", "FuncIndexedDbFile")]
-    internal static partial Task<string?> GetFileAsBase64Async(string dbName, string storeName, string key);
+    internal static partial Task<string?> GetFileAsBase64Async(string dbName, int dbVersion, string storeName, string key);
 
-    public static async Task<byte[]?> LoadFileAsBase64Async(string dbName, string storeName, string key)
+    public static async Task<byte[]?> LoadFileAsBase64Async(string dbName, int dbVersion, string storeName, string key)
     {
-        var base64 = await GetFileAsBase64Async(dbName, storeName, key);
+        var base64 = await GetFileAsBase64Async(dbName, dbVersion, storeName, key);
         if (string.IsNullOrEmpty(base64))
             return null;
 

@@ -1,6 +1,6 @@
-﻿export async function openDatabase(dbName, storeName) {
+﻿export async function openDatabase(dbName, storeName, version = 1) {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open(dbName, 1);
+        const request = indexedDB.open(dbName, version);
 
         request.onupgradeneeded = function (event) {
             const db = event.target.result;
@@ -19,8 +19,8 @@
     });
 }
 
-export async function saveFileToIndexedDBFromBase64(dbName, storeName, key, base64String, mimeType) {
-    const db = await openDatabase(dbName, storeName);
+export async function saveFileToIndexedDBFromBase64(dbName, dbVersion, storeName, key, base64String, mimeType) {
+    const db = await openDatabase(dbName, storeName, dbVersion);
     return new Promise((resolve, reject) => {
         const tx = db.transaction(storeName, "readwrite");
         const store = tx.objectStore(storeName);
@@ -42,8 +42,8 @@ export async function saveFileToIndexedDBFromBase64(dbName, storeName, key, base
     });
 }
 
-export async function getFileFromIndexedDBAsBase64(dbName, storeName, key) {
-    const db = await openDatabase(dbName, storeName);
+export async function getFileFromIndexedDBAsBase64(dbName, dbVersion, storeName, key) {
+    const db = await openDatabase(dbName, storeName, dbVersion);
     return new Promise((resolve, reject) => {
         const tx = db.transaction(storeName, "readonly");
         const store = tx.objectStore(storeName);

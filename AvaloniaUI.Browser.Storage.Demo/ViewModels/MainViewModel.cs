@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AvaloniaUI.Browser.Storage.Contracts;
 
 namespace AvaloniaUI.Browser.Storage.Demo.ViewModels;
 
@@ -146,9 +147,9 @@ public partial class MainViewModel : ViewModelBase
             return;
         }
 
-        await IndexedDbFileService.SaveFileAsync(dbName, storeName, fileName, _fileContent, "text/plain");
+        await IndexedDbFileService.SaveFileAsync(dbName, 2, storeName, fileName, _fileContent, MimeTypes.TextPlain);
 
-        var loadedFile = await IndexedDbFileService.LoadFileAsBase64Async(dbName, storeName, fileName);
+        var loadedFile = await IndexedDbFileService.LoadFileAsBase64Async(dbName, 2, storeName, fileName);
         if (loadedFile == null)
         {
             throw new InvalidOperationException("Failed to load file from IndexedDB.");
