@@ -21,6 +21,7 @@ public partial class MainViewModel : ViewModelBase
     private byte[] _fileContent;
     private readonly SessionStorageService _sessionStorageService;
     private readonly LocalStorageService _localStorageService;
+    private readonly IndexedDbFileService _indexedDbFileService;
 
     [ObservableProperty]
     private string _valueToSetLocalStorage = string.Empty;
@@ -56,6 +57,7 @@ public partial class MainViewModel : ViewModelBase
         // Initialize the session storage service and local storage service.
         _sessionStorageService = new SessionStorageService();
         _localStorageService = new LocalStorageService();
+        _indexedDbFileService = new IndexedDbFileService();
         // Optionally, you can load initial data or perform setup here.
         LoadInitialData();
     }
@@ -147,9 +149,9 @@ public partial class MainViewModel : ViewModelBase
             return;
         }
 
-        await IndexedDbFileService.SaveFileAsync(dbName, 2, storeName, fileName, _fileContent, MimeTypes.TextPlain);
+        await _indexedDbFileService.SaveFileAsync(dbName, 2, storeName, fileName, _fileContent, MimeTypes.TextPlain);
 
-        var loadedFile = await IndexedDbFileService.LoadFileAsBase64Async(dbName, 2, storeName, fileName);
+        var loadedFile = await _indexedDbFileService.GetFileAsync(dbName, 2, storeName, fileName);
         if (loadedFile == null)
         {
             throw new InvalidOperationException("Failed to load file from IndexedDB.");
