@@ -8,11 +8,16 @@ using AvaloniaUI.Browser.Storage.Demo.Views;
 
 using System;
 using System.Runtime.InteropServices.JavaScript;
+using Avalonia.Controls;
 
 namespace AvaloniaUI.Browser.Storage.Demo;
 
 public partial class App : Application
 {
+    private static TopLevel _topLevel;
+
+    public static TopLevel TopLevel => _topLevel;
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -24,6 +29,7 @@ public partial class App : Application
         {
             await JSHost.ImportAsync("FuncLocalStorage", "/js/FuncLocalStorage.js");
             await JSHost.ImportAsync("FuncSessionStorage", "/js/FuncSessionStorage.js");
+            await JSHost.ImportAsync("FuncIndexedDbFile", "/js/FuncIndexedDbFile.js");
         }
 
         // Line below is needed to remove Avalonia data validation.
@@ -36,6 +42,7 @@ public partial class App : Application
             {
                 DataContext = new MainViewModel()
             };
+            _topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
@@ -43,6 +50,7 @@ public partial class App : Application
             {
                 DataContext = new MainViewModel()
             };
+            _topLevel = TopLevel.GetTopLevel(singleViewPlatform.MainView);
         }
 
         base.OnFrameworkInitializationCompleted();

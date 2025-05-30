@@ -1,9 +1,13 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using Avalonia.Platform.Storage;
+
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,6 +17,7 @@ public partial class MainViewModel : ViewModelBase
 {
     #region Fields
 
+    private byte[] _fileContent;
     private readonly SessionStorageService _sessionStorageService;
     private readonly LocalStorageService _localStorageService;
 
@@ -27,6 +32,12 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _valueFromLocalStorage = string.Empty;
+
+    [ObservableProperty]
+    private string _loadedFileContent = string.Empty;
+
+    [ObservableProperty]
+    private string _databaseFileContent = string.Empty;
 
     [ObservableProperty]
     private ObservableCollection<Tuple<string, object>> _sessionStorageEntries = new ObservableCollection<Tuple<string, object>>();
@@ -101,6 +112,51 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    public async Task BrowseFile()
+    {
+        LoadedFileContent = string.Empty; // Reset the content before storing a new file
+
+        // Start async operation to open the dialog.
+        var files = await App.TopLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Open Text File",
+            AllowMultiple = false
+        });
+
+        if (files.Count >= 1)
+        {
+            // Open reading stream from the first file.
+            await using var stream = await files[0].OpenReadAsync();
+            _fileContent = await ReadFully(stream);
+            LoadedFileContent = System.Text.Encoding.UTF8.GetString(_fileContent);
+        }
+    }
+
+    [RelayCommand]
+    public async Task StoreFile()
+    {
+        DatabaseFileContent = string.Empty; // Reset the content before storing a new file
+        var dbName = "TestDB";
+        var storeName = "Test_Store";
+        var fileName = "Test_File";
+
+        if (!(_fileContent?.Length > 0))
+        {
+            throw new InvalidOperationException("File content is empty. Please browse a file first.");
+            return;
+        }
+
+        await IndexedDbFileService.SaveFileAsync(dbName, storeName, fileName, _fileContent, "text/plain");
+
+        var loadedFile = await IndexedDbFileService.LoadFileAsBase64Async(dbName, storeName, fileName);
+        if (loadedFile == null)
+        {
+            throw new InvalidOperationException("Failed to load file from IndexedDB.");
+        }
+        DatabaseFileContent = System.Text.Encoding.UTF8.GetString(loadedFile);
+    }
+
+    [RelayCommand]
     public async void GetSessionStorageEntries()
     {
         try
@@ -143,6 +199,20 @@ public partial class MainViewModel : ViewModelBase
         catch (Exception e)
         {
             Console.WriteLine($"Error retrieving local storage entries: {e.Message}");
+        }
+    }
+
+    public static async Task<byte[]> ReadFully(Stream input)
+    {
+        byte[] buffer = new byte[16 * 1024];
+        using (MemoryStream ms = new MemoryStream())
+        {
+            int read;
+            while ((read = await input.ReadAsync(buffer, 0, buffer.Length)) > 0)
+            {
+                await ms.WriteAsync(buffer, 0, read);
+            }
+            return ms.ToArray();
         }
     }
 }

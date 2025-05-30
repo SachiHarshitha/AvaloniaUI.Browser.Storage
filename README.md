@@ -4,7 +4,10 @@ This library provides a simple way to use browser storage in AvaloniaUI applicat
 
 ## Sample Application
 
-![image](https://github.com/user-attachments/assets/32aa25af-08d2-4a3b-ad2d-8ea231c3e12d)
+| Session / Local Storage    | IndexedDB |
+| -------- | ------- |
+| ![image](https://github.com/user-attachments/assets/32aa25af-08d2-4a3b-ad2d-8ea231c3e12d)  | ![image](https://github.com/user-attachments/assets/4dcf76ee-dd3d-436b-bf8f-c08f6fe7b25d)    |
+
 
 
 ## How to Use
@@ -43,6 +46,8 @@ Currently , the library is in the early stages of development. To use it, you ca
         {
             await JSHost.ImportAsync("FuncLocalStorage", "/js/FuncLocalStorage.js");
             await JSHost.ImportAsync("FuncSessionStorage", "/js/FuncSessionStorage.js");
+			await JSHost.ImportAsync("FuncIndexedDbFile", "/js/FuncIndexedDbFile.js");
+
         }
 ```
 
@@ -59,10 +64,15 @@ Currently , the library is in the early stages of development. To use it, you ca
 
 	# Session Storage Example
 	await _sessionStorageService.SetItemAsync("Session_Text", ValueToSetSessionStorage);
-    ValueFromSessionStorage = await _sessionStorageService.GetItemAsync("Session_Text");
+	ValueFromSessionStorage = await _sessionStorageService.GetItemAsync("Session_Text");
 
 	...........
 	# Local Storage Example
 	await _localStorageService.SetItemAsync("Local_Text", ValueToSetLocalStorage);
 	ValueFromLocalStorage = await _localStorageService.GetItemAsync("Local_Text");
+
+	...........
+	# IndexedDB Example
+	await IndexedDbFileService.SaveFileAsync(dbName, storeName, fileName, _fileContent, "text/plain");
+	var filefromDB = await IndexedDbFileService.LoadFileAsBase64Async(dbName, storeName, fileName);
 ```
