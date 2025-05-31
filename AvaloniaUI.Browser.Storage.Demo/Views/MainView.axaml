@@ -208,8 +208,8 @@
 
 				<Grid>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition />
-						<ColumnDefinition />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="50" />
@@ -227,9 +227,14 @@
                         Content="Store"
                         DockPanel.Dock="Bottom" />
 					<StackPanel Grid.Row="1" Grid.Column="0">
-
 						<StackPanel Orientation="Vertical">
-
+							<StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+								<Label Content="Meta Data:" />
+								<TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="{Binding LoadedFileMetadata}"
+                                    TextWrapping="WrapWithOverflow" />
+							</StackPanel>
 							<Label VerticalAlignment="Center" Content="File Content:" />
 
 							<TextBox
@@ -239,6 +244,13 @@
 						</StackPanel>
 					</StackPanel>
 					<StackPanel Grid.Row="1" Grid.Column="1">
+						<StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+							<Label Content="Meta Data:" />
+							<TextBlock
+                                VerticalAlignment="Center"
+                                Text="{Binding DatabaseFileMetaData}"
+                                TextWrapping="WrapWithOverflow" />
+						</StackPanel>
 						<Label VerticalAlignment="Center" Content="Database File Content:" />
 
 						<TextBox

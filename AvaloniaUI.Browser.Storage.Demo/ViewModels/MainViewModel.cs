@@ -8,6 +8,8 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AvaloniaUI.Browser.Storage.Demo.ViewModels;
@@ -17,6 +19,7 @@ public partial class MainViewModel : ViewModelBase
     #region Fields
 
     private byte[] _fileContent;
+    private IStorageFile _file;
     private readonly ISessionStorageService _sessionStorageService;
     private readonly ILocalStorageService _localStorageService;
     private readonly IIndexedDbFileService _indexedDbFileService;
@@ -40,12 +43,22 @@ public partial class MainViewModel : ViewModelBase
     private string _databaseFileContent = string.Empty;
 
     [ObservableProperty]
+    private string _loadedFileMetadata = string.Empty;
+
+    [ObservableProperty]
+    private string _databaseFileMetaData = string.Empty;
+
+    [ObservableProperty]
     private ObservableCollection<Tuple<string, object>> _sessionStorageEntries = new ObservableCollection<Tuple<string, object>>();
 
     [ObservableProperty]
     private ObservableCollection<Tuple<string, object>> _localStorageEntries = new ObservableCollection<Tuple<string, object>>();
 
     #endregion Fields
+
+    public MainViewModel()
+    {
+    }
 
     /// <summary>
     /// Default constructor for MainViewModel.
@@ -116,17 +129,20 @@ public partial class MainViewModel : ViewModelBase
     public async Task BrowseFile()
     {
         LoadedFileContent = string.Empty; // Reset the content before storing a new file
-
+        LoadedFileMetadata = string.Empty; // Reset the metadata before loading a new file
         // Start async operation to open the dialog.
         var files = await App.TopLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "Open Text File",
+            Title = "Open File",
             AllowMultiple = false
         });
 
         if (files.Count >= 1)
         {
             // Open reading stream from the first file.
+            _file = files[0] as IStorageFile;
+            var props = await _file.GetBasicPropertiesAsync();
+            LoadedFileMetadata = $"Name: {_file.Name}, Size: {props.Size} bytes, Created On: {props.DateCreated}, Modified On: {props.DateModified}";
             await using var stream = await files[0].OpenReadAsync();
             _fileContent = await ReadFully(stream);
             LoadedFileContent = System.Text.Encoding.UTF8.GetString(_fileContent);
@@ -146,15 +162,17 @@ public partial class MainViewModel : ViewModelBase
             throw new InvalidOperationException("File content is empty. Please browse a file first.");
             return;
         }
+        var props = await _file.GetBasicPropertiesAsync();
 
-        await _indexedDbFileService.SaveFileAsync(dbName, 2, storeName, fileName, _fileContent, MimeTypes.TextPlain);
+        await _indexedDbFileService.SaveFileWithMetadataAsync(dbName, 2, storeName, fileName, _fileContent, MimeTypes.TextPlain, _file.Name, props.DateCreated?.ToString(), props.DateModified?.ToString(), _file.Name.Split('.').Last());
 
-        var loadedFile = await _indexedDbFileService.GetFileAsync(dbName, 2, storeName, fileName);
-        if (loadedFile == null)
+        var dbFile = await _indexedDbFileService.GetFileWithMetadataAsync(dbName, 2, storeName, fileName);
+        if (dbFile == null)
         {
             throw new InvalidOperationException("Failed to load file from IndexedDB.");
         }
-        DatabaseFileContent = System.Text.Encoding.UTF8.GetString(loadedFile);
+        DatabaseFileContent = System.Text.Encoding.UTF8.GetString(dbFile.Data);
+        DatabaseFileMetaData = $"Name: {dbFile.FileName}, Size: {dbFile.Data.Length} bytes, Created On: {dbFile.CreatedAt}, Modified On: {dbFile.LastModifiedAt}, Format: {dbFile.FileFormat}";
     }
 
     [RelayCommand]

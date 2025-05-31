@@ -42,6 +42,48 @@ export async function saveFileToIndexedDBFromBase64(dbName, dbVersion, storeName
     });
 }
 
+export async function saveFileWithMetadata(
+    dbName,
+    dbVersion,
+    storeName,
+    key,
+    base64String,
+    mimeType,
+    fileName,
+    createdAt,
+    lastModifiedAt,
+    fileFormat
+) {
+    const db = await openDatabase(dbName, storeName, dbVersion);
+
+    const binary = atob(base64String);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+    }
+    const blob = new Blob([bytes], { type: mimeType });
+
+    const fileEntry = {
+        key,
+        fileName,
+        mimeType,
+        size: blob.size,
+        createdAt,
+        lastModifiedAt,
+        fileFormat,
+        data: blob
+    };
+
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, "readwrite");
+        const store = tx.objectStore(storeName);
+        const req = store.put(fileEntry, key);
+
+        req.onsuccess = () => resolve(true);
+        req.onerror = () => reject(req.error);
+    });
+}
+
 export async function getFileFromIndexedDBAsBase64(dbName, dbVersion, storeName, key) {
     const db = await openDatabase(dbName, storeName, dbVersion);
     return new Promise((resolve, reject) => {
@@ -59,7 +101,50 @@ export async function getFileFromIndexedDBAsBase64(dbName, dbVersion, storeName,
                     resolve(base64);
                 };
                 reader.onerror = reject;
-                reader.readAsDataURL(blob);
+                reader.readAsDataURL(blob.data);
+            } else {
+                resolve(null);
+            }
+        };
+
+        getRequest.onerror = () => reject(getRequest.error);
+    });
+}
+
+export async function getFileWithMetadata(
+    dbName,
+    dbVersion,
+    storeName,
+    key
+) {
+    const db = await openDatabase(dbName, storeName, dbVersion);
+
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, "readonly");
+        const store = tx.objectStore(storeName);
+
+        const getRequest = store.get(key);
+
+        getRequest.onsuccess = () => {
+            const fileEntry = getRequest.result;
+            if (fileEntry) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const base64 = reader.result.split(",")[1];
+                    const result = {
+                        key: fileEntry.key,
+                        fileName: fileEntry.fileName,
+                        mimeType: fileEntry.mimeType,
+                        size: fileEntry.size,
+                        createdAt: fileEntry.createdAt,
+                        lastModifiedAt: fileEntry.lastModifiedAt,
+                        fileFormat: fileEntry.fileFormat,
+                        dataBase64: base64
+                    };
+                    resolve(result);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(fileEntry.data);
             } else {
                 resolve(null);
             }
