@@ -7,42 +7,89 @@ namespace AvaloniaUI.Browser.Storage;
 
 public partial class LocalStorageService : ILocalStorageService
 {
+    #region Fields
+
+    private const string ModuleName = "FuncLocalStorage";
+
+    private const string ModulePath = "/js/FuncLocalStorage.js";
+
+    private JSObject? _indexedDbModule;
+
+    #endregion Fields
+
     #region JS Interop
 
-    [JSImport("setItemAsync", "FuncLocalStorage")]
+    [JSImport("setItemAsync", ModuleName)]
     internal static partial Task JsSetItemAsync(string key, string value);
 
-    [JSImport("getItemAsync", "FuncLocalStorage")]
+    [JSImport("getItemAsync", ModuleName)]
     internal static partial Task<string?> JsGetItemAsync(string key);
 
-    [JSImport("removeItemAsync", "FuncLocalStorage")]
+    [JSImport("removeItemAsync", ModuleName)]
     internal static partial Task JsRemoveItemAsync(string key);
 
-    [JSImport("clearAsync", "FuncLocalStorage")]
+    [JSImport("clearAsync", ModuleName)]
     internal static partial Task JsClearAsync();
 
-    [JSImport("lengthAsync", "FuncLocalStorage")]
+    [JSImport("lengthAsync", ModuleName)]
     internal static partial Task<double> JsLengthAsync();
 
-    [JSImport("keyAsync", "FuncLocalStorage")]
+    [JSImport("keyAsync", ModuleName)]
     internal static partial Task<string?> JsKeyAsync(double index);
 
     #endregion JS Interop
 
-    #region Public Methods
+    public LocalStorageService()
+    {
+        _ = InitializeAsync();
+    }
 
-    // Public API implementation for ILocalStorageService
-    public async ValueTask ClearAsync() => await JsClearAsync();
+    #region Methods
 
-    public async ValueTask<string?> GetItemAsync(string key) => await JsGetItemAsync(key);
+    /// <summary>
+    /// Initialization method
+    /// </summary>
+    /// <returns></returns>
+    private async Task InitializeAsync()
+    {
+        _indexedDbModule = await JSHost.ImportAsync(ModuleName, ModulePath);
+    }
 
-    public async ValueTask<string?> KeyAsync(double index) => await JsKeyAsync(index);
+    public async ValueTask ClearAsync()
+    {
+        _indexedDbModule ??= await JSHost.ImportAsync(ModuleName, ModulePath);
+        await JsClearAsync();
+    }
 
-    public async ValueTask RemoveItemAsync(string key) => await JsRemoveItemAsync(key);
+    public async ValueTask<string?> GetItemAsync(string key)
+    {
+        _indexedDbModule ??= await JSHost.ImportAsync(ModuleName, ModulePath);
+        return await JsGetItemAsync(key);
+    }
 
-    public async ValueTask SetItemAsync(string key, string value) => await JsSetItemAsync(key, value);
+    public async ValueTask<string?> KeyAsync(double index)
+    {
+        _indexedDbModule ??= await JSHost.ImportAsync(ModuleName, ModulePath);
+        return await JsKeyAsync(index);
+    }
 
-    public ValueTask<double> Length => new ValueTask<double>(JsLengthAsync());
+    public async ValueTask RemoveItemAsync(string key)
+    {
+        _indexedDbModule ??= await JSHost.ImportAsync(ModuleName, ModulePath);
+        await JsRemoveItemAsync(key);
+    }
 
-    #endregion Public Methods
+    public async ValueTask SetItemAsync(string key, string value)
+    {
+        _indexedDbModule ??= await JSHost.ImportAsync(ModuleName, ModulePath);
+        await JsSetItemAsync(key, value);
+    }
+
+    public async ValueTask<double> GetLength()
+    {
+        _indexedDbModule ??= await JSHost.ImportAsync(ModuleName, ModulePath);
+        return await JsLengthAsync();
+    }
+
+    #endregion Methods
 }

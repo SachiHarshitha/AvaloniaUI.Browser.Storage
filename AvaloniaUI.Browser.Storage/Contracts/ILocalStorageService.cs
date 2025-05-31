@@ -41,6 +41,6 @@ namespace AvaloniaUI.Browser.Storage.Contracts
         /// Source generated implementation of <c>window.localStorage.length</c>.
         /// <a href="https://developer.mozilla.org/docs/Web/API/Storage/length"></a>
         /// </summary>
-        ValueTask<double> Length { get; }
+        ValueTask<double> GetLength();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
@@ -6,9 +7,10 @@ using Avalonia.Markup.Xaml;
 using AvaloniaUI.Browser.Storage.Demo.ViewModels;
 using AvaloniaUI.Browser.Storage.Demo.Views;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using System;
 using System.Runtime.InteropServices.JavaScript;
-using Avalonia.Controls;
 
 namespace AvaloniaUI.Browser.Storage.Demo;
 
@@ -25,11 +27,21 @@ public partial class App : Application
 
     public override async void OnFrameworkInitializationCompleted()
     {
+        var services = new ServiceCollection();
+
+        // Register your browser storage services
+        services.AddBrowserStorage();
+
+        // Register ViewModels, etc.
+        services.AddSingleton<MainViewModel>();
+
+        var serviceProvider = services.BuildServiceProvider();
+
         if (OperatingSystem.IsBrowser())
         {
-            await JSHost.ImportAsync("FuncLocalStorage", "/js/FuncLocalStorage.js");
-            await JSHost.ImportAsync("FuncSessionStorage", "/js/FuncSessionStorage.js");
-            await JSHost.ImportAsync("FuncIndexedDbFile", "/js/FuncIndexedDbFile.js");
+            //await JSHost.ImportAsync("FuncLocalStorage", "/js/FuncLocalStorage.js");
+            //await JSHost.ImportAsync("FuncSessionStorage", "/js/FuncSessionStorage.js");
+            // await JSHost.ImportAsync("FuncIndexedDbFile", "/js/FuncIndexedDbFile.js");
         }
 
         // Line below is needed to remove Avalonia data validation.
@@ -40,7 +52,7 @@ public partial class App : Application
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainViewModel()
+                DataContext = serviceProvider.GetRequiredService<MainViewModel>()
             };
             _topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
         }
@@ -48,7 +60,7 @@ public partial class App : Application
         {
             singleViewPlatform.MainView = new MainView
             {
-                DataContext = new MainViewModel()
+                DataContext = serviceProvider.GetRequiredService<MainViewModel>()
             };
             _topLevel = TopLevel.GetTopLevel(singleViewPlatform.MainView);
         }

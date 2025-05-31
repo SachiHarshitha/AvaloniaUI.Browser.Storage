@@ -42,13 +42,25 @@ Currently , the library is in the early stages of development. To use it, you ca
 4. Add the required JSScript loading to your crossplatform project (File : xxxx.csproj).
 
 ```csharp
-  if (OperatingSystem.IsBrowser())
+
+	# Option  1
+	# Direct Reference, Add the following section to your App.cs file or wherever you initialize your application.
+
+	if (OperatingSystem.IsBrowser())
         {
             await JSHost.ImportAsync("FuncLocalStorage", "/js/FuncLocalStorage.js");
             await JSHost.ImportAsync("FuncSessionStorage", "/js/FuncSessionStorage.js");
 			await JSHost.ImportAsync("FuncIndexedDbFile", "/js/FuncIndexedDbFile.js");
 
         }
+
+	..........
+
+	# Option  2
+	# For Dependency Injection, inject the services in your `App.cs` file or wherever you configure your services.
+
+	services.AddBrowserStorage();
+
 ```
 
 5. Use the `LocalStorage` and `SessionStorage` classes to store and retrieve data in your AvaloniaUI application.
@@ -57,6 +69,7 @@ Currently , the library is in the early stages of development. To use it, you ca
 
 	.........
 
+	# Initialize the storage services in your class or view model, if not dependecy Injection.
 	private SessionStorageService _sessionStorageService = new SessionStorageService();
 	private LocalStorageService _localStorageService = new LocalStorageService();
 

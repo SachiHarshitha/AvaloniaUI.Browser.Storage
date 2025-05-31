@@ -1,16 +1,14 @@
-﻿using Avalonia.Controls;
-using Avalonia.Platform.Storage;
+﻿using Avalonia.Platform.Storage;
+
+using AvaloniaUI.Browser.Storage.Contracts;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using AvaloniaUI.Browser.Storage.Contracts;
 
 namespace AvaloniaUI.Browser.Storage.Demo.ViewModels;
 
@@ -19,9 +17,9 @@ public partial class MainViewModel : ViewModelBase
     #region Fields
 
     private byte[] _fileContent;
-    private readonly SessionStorageService _sessionStorageService;
-    private readonly LocalStorageService _localStorageService;
-    private readonly IndexedDbFileService _indexedDbFileService;
+    private readonly ISessionStorageService _sessionStorageService;
+    private readonly ILocalStorageService _localStorageService;
+    private readonly IIndexedDbFileService _indexedDbFileService;
 
     [ObservableProperty]
     private string _valueToSetLocalStorage = string.Empty;
@@ -52,12 +50,12 @@ public partial class MainViewModel : ViewModelBase
     /// <summary>
     /// Default constructor for MainViewModel.
     /// </summary>
-    public MainViewModel()
+    public MainViewModel(IIndexedDbFileService indexedDbFileService, ISessionStorageService sessionStorageService, ILocalStorageService localStorageService)
     {
         // Initialize the session storage service and local storage service.
-        _sessionStorageService = new SessionStorageService();
-        _localStorageService = new LocalStorageService();
-        _indexedDbFileService = new IndexedDbFileService();
+        _sessionStorageService = sessionStorageService;
+        _localStorageService = localStorageService;
+        _indexedDbFileService = indexedDbFileService;
         // Optionally, you can load initial data or perform setup here.
         LoadInitialData();
     }
@@ -166,7 +164,7 @@ public partial class MainViewModel : ViewModelBase
         {
             SessionStorageEntries.Clear();
 
-            var length = await _sessionStorageService.Length;
+            var length = await _sessionStorageService.GetLength();
 
             for (var i = 0; i < length; i++)
             {
@@ -189,7 +187,7 @@ public partial class MainViewModel : ViewModelBase
         {
             LocalStorageEntries.Clear();
 
-            var length = await _localStorageService.Length;
+            var length = await _localStorageService.GetLength();
 
             for (var i = 0; i < length; i++)
             {
