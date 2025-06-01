@@ -193,3 +193,51 @@ export async function getAllFileEntriesFromIndexedDB(dbName, dbVersion, storeNam
         req.onerror = () => reject(req.error);
     });
 }
+
+export async function clearStore(dbName, storeName, dbVersion = 1) {
+    const db = await openDatabase(dbName, storeName, dbVersion);
+
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, "readwrite");
+        const store = tx.objectStore(storeName);
+        const clearRequest = store.clear();
+
+        clearRequest.onsuccess = () => {
+            db.close();
+            resolve(true);
+        };
+        clearRequest.onerror = () => reject(clearRequest.error);
+    });
+}
+
+export async function deleteDatabase(dbName) {
+    return new Promise((resolve, reject) => {
+        const deleteRequest = indexedDB.deleteDatabase(dbName);
+
+        deleteRequest.onsuccess = () => resolve(true);
+        deleteRequest.onerror = () => reject(deleteRequest.error);
+        deleteRequest.onblocked = () => {
+            console.warn("Delete blocked: Please close other connections!");
+        };
+    });
+}
+
+export async function clearAllStores(dbName, dbVersion = 1) {
+    const db = await openDatabase(dbName, "", dbVersion);
+
+    return new Promise((resolve, reject) => {
+        const storeNames = Array.from(db.objectStoreNames);
+        const tx = db.transaction(storeNames, "readwrite");
+
+        storeNames.forEach((storeName) => {
+            const store = tx.objectStore(storeName);
+            store.clear();
+        });
+
+        tx.oncomplete = () => {
+            db.close();
+            resolve(true);
+        };
+        tx.onerror = () => reject(tx.error);
+    });
+}
