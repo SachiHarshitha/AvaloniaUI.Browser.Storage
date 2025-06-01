@@ -9,257 +9,278 @@
     d:DesignWidth="800"
     x:DataType="vm:MainViewModel"
     mc:Ignorable="d">
-	<Design.DataContext>
-		<!--
+    <Design.DataContext>
+        <!--
             This only sets the DataContext for the previewer in an IDE,
             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs)
         -->
-		<vm:MainViewModel />
-	</Design.DataContext>
-	<DockPanel>
-		<StackPanel Background="MediumSlateBlue" DockPanel.Dock="Top">
-			<TextBlock
+        <vm:MainViewModel />
+    </Design.DataContext>
+    <DockPanel>
+        <StackPanel Background="MediumSlateBlue" DockPanel.Dock="Top">
+            <TextBlock
                 Height="50"
                 Margin="10,20,10,0"
                 HorizontalAlignment="Center"
                 FontSize="30"
                 FontWeight="ExtraBold"
                 Text="{Binding Greeting}" />
-			<TextBlock
+            <TextBlock
                 Margin="30,10"
                 HorizontalAlignment="Right"
                 Text="By Sachith Liyanagama" />
-		</StackPanel>
-		<TabControl>
-			<TabItem Header="Local/SessionStorage">
-				<DockPanel HorizontalAlignment="Center" VerticalAlignment="Stretch">
+        </StackPanel>
+        <TabControl>
+            <TabItem Header="Local/SessionStorage">
+                <DockPanel HorizontalAlignment="Center" VerticalAlignment="Stretch">
 
-					<Grid Margin="20,0">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
-						<DockPanel
+                    <Grid Margin="20,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <DockPanel
                             Grid.Row="0"
                             Grid.Column="0"
                             Margin="10">
-							<Label
+                            <Label
                                 Content="Session Storage"
                                 DockPanel.Dock="Top"
                                 FontSize="20"
                                 FontWeight="DemiBold" />
-							<StackPanel VerticalAlignment="Center">
+                            <StackPanel VerticalAlignment="Center">
 
-								<StackPanel Orientation="Horizontal">
-									<Label VerticalAlignment="Center" Content="Value To Set:" />
-									<TextBox
+                                <StackPanel Orientation="Horizontal">
+                                    <Label VerticalAlignment="Center" Content="Value To Set:" />
+                                    <TextBox
                                         Width="200"
                                         Height="30"
                                         Margin="5,0,0,0"
                                         Text="{Binding ValueToSetSessionStorage}" />
-									<Button
+                                    <Button
                                         Margin="5,0,0,0"
                                         Command="{Binding SessionStorageCommand}"
                                         Content="Store"
                                         DockPanel.Dock="Bottom" />
-								</StackPanel>
-								<StackPanel
+                                </StackPanel>
+                                <StackPanel
                                     Height="50"
                                     VerticalAlignment="Center"
                                     DockPanel.Dock="Left"
                                     Orientation="Horizontal">
-									<Label VerticalAlignment="Center" Content="Value From Storage:" />
-									<Label
+                                    <Label VerticalAlignment="Center" Content="Value From Storage:" />
+                                    <Label
                                         Width="200"
                                         Height="30"
                                         Margin="5,0,0,0"
                                         Content="{Binding ValueFromSessionStorage}" />
-								</StackPanel>
-							</StackPanel>
-						</DockPanel>
-						<DockPanel
+                                </StackPanel>
+                            </StackPanel>
+                        </DockPanel>
+                        <DockPanel
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="10">
-							<Label
+                            <Label
                                 Content="Local Storage"
                                 DockPanel.Dock="Top"
                                 FontSize="20"
                                 FontWeight="DemiBold" />
-							<StackPanel VerticalAlignment="Center">
-								<StackPanel
+                            <StackPanel VerticalAlignment="Center">
+                                <StackPanel
                                     Height="50"
                                     VerticalAlignment="Center"
                                     DockPanel.Dock="Left"
                                     Orientation="Horizontal">
-									<Label VerticalAlignment="Center" Content="Value To Set:" />
-									<TextBox
+                                    <Label VerticalAlignment="Center" Content="Value To Set:" />
+                                    <TextBox
                                         Width="200"
                                         Height="30"
                                         Margin="5,0,0,0"
                                         Text="{Binding ValueToSetLocalStorage}" />
-									<Button
+                                    <Button
                                         Margin="5,0,0,0"
                                         Command="{Binding LocalStorageCommand}"
                                         Content="Store"
                                         DockPanel.Dock="Bottom" />
-								</StackPanel>
-								<StackPanel
+                                </StackPanel>
+                                <StackPanel
                                     Height="50"
                                     VerticalAlignment="Center"
                                     DockPanel.Dock="Bottom"
                                     Orientation="Horizontal">
-									<Label VerticalAlignment="Center" Content="Value From  Storage:" />
-									<Label
+                                    <Label VerticalAlignment="Center" Content="Value From  Storage:" />
+                                    <Label
                                         Width="200"
                                         Height="30"
                                         Margin="5,0,0,0"
                                         Content="{Binding ValueFromLocalStorage}" />
-								</StackPanel>
-							</StackPanel>
-						</DockPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </DockPanel>
 
-						<Grid Grid.Row="1" Grid.Column="0">
-							<Grid.RowDefinitions>
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-							</Grid.RowDefinitions>
-							<Separator DockPanel.Dock="Top" />
-							<DockPanel
+                        <Grid Grid.Row="1" Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Separator DockPanel.Dock="Top" />
+                            <DockPanel
                                 Grid.Row="1"
                                 HorizontalAlignment="Stretch"
                                 DockPanel.Dock="Top">
-								<Label HorizontalAlignment="Left" Content="Entries" />
-								<Button
+                                <Label HorizontalAlignment="Left" Content="Entries" />
+                                <Button
                                     HorizontalAlignment="Right"
                                     Command="{Binding GetSessionStorageEntries}"
                                     Content="Reload" />
-							</DockPanel>
-							<DataGrid Grid.Row="2" ItemsSource="{Binding SessionStorageEntries}">
-								<DataGrid.Columns>
-									<DataGridTextColumn
+                            </DockPanel>
+                            <DataGrid Grid.Row="2" ItemsSource="{Binding SessionStorageEntries}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn
                                         Binding="{Binding Item1}"
                                         Header="Key"
                                         IsReadOnly="True" />
-									<DataGridTextColumn
+                                    <DataGridTextColumn
                                         Binding="{Binding Item2}"
                                         Header="Value"
                                         IsReadOnly="True" />
-								</DataGrid.Columns>
-							</DataGrid>
-							<StackPanel Grid.Row="3" DockPanel.Dock="Bottom">
-								<Separator DockPanel.Dock="Top" />
-								<Button
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <StackPanel Grid.Row="3" DockPanel.Dock="Bottom">
+                                <Separator DockPanel.Dock="Top" />
+                                <Button
                                     Margin="5,0,0,0"
                                     Command="{Binding ClearSessionStorageAsync}"
                                     Content="Clear Storage"
                                     DockPanel.Dock="Bottom" />
-							</StackPanel>
-						</Grid>
-						<Grid Grid.Row="1" Grid.Column="1">
-							<Grid.RowDefinitions>
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-							</Grid.RowDefinitions>
-							<Separator DockPanel.Dock="Top" />
-							<DockPanel
+                            </StackPanel>
+                        </Grid>
+                        <Grid Grid.Row="1" Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Separator DockPanel.Dock="Top" />
+                            <DockPanel
                                 Grid.Row="1"
                                 HorizontalAlignment="Stretch"
                                 DockPanel.Dock="Top">
-								<Label HorizontalAlignment="Left" Content="Entries" />
-								<Button
+                                <Label HorizontalAlignment="Left" Content="Entries" />
+                                <Button
                                     HorizontalAlignment="Right"
                                     Command="{Binding GetLocalStorageEntries}"
                                     Content="Reload" />
-							</DockPanel>
-							<DataGrid Grid.Row="2" ItemsSource="{Binding LocalStorageEntries}">
-								<DataGrid.Columns>
-									<DataGridTextColumn
+                            </DockPanel>
+                            <DataGrid Grid.Row="2" ItemsSource="{Binding LocalStorageEntries}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn
                                         Binding="{Binding Item1}"
                                         Header="Key"
                                         IsReadOnly="True" />
-									<DataGridTextColumn
+                                    <DataGridTextColumn
                                         Binding="{Binding Item2}"
                                         Header="Value"
                                         IsReadOnly="True" />
-								</DataGrid.Columns>
-							</DataGrid>
-							<StackPanel Grid.Row="3" DockPanel.Dock="Bottom">
-								<Separator DockPanel.Dock="Top" />
-								<Button
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <StackPanel Grid.Row="3" DockPanel.Dock="Bottom">
+                                <Separator DockPanel.Dock="Top" />
+                                <Button
                                     Margin="5,0,0,0"
                                     Command="{Binding ClearLocalStorageAsync}"
                                     Content="Clear Storage"
                                     DockPanel.Dock="Bottom" />
-							</StackPanel>
-						</Grid>
-					</Grid>
-				</DockPanel>
-			</TabItem>
-			<TabItem Header="IndexedDB">
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="IndexedDB">
 
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="50" />
-						<RowDefinition />
-					</Grid.RowDefinitions>
-					<Button
-                        Margin="5,0,0,0"
-                        Command="{Binding BrowseFile}"
-                        Content="Browse"
-                        DockPanel.Dock="Bottom" />
-					<Button
-                        Grid.Row="0"
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="150" />
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid HorizontalAlignment="Stretch" DockPanel.Dock="Top">
+                            <Button HorizontalAlignment="Right"
+                                    Command="{Binding QueryIndexedDB}"
+                                    Content="Query" />
+                            <TextBlock FontWeight="DemiBold" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                       Text="Indexed DB Content">
+                            </TextBlock>
+                        </Grid>
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding IndexedDbEntries}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Key" Binding="{Binding Item1}" />
+                                <DataGridTextColumn Header="Value" Binding="{Binding Item2}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                    <Button Grid.Row="1"
+                            Margin="5,0,0,0"
+                            Command="{Binding BrowseFile}"
+                            Content="Browse"
+                            DockPanel.Dock="Bottom" />
+                    <Button
+                        Grid.Row="1"
                         Grid.Column="1"
                         Command="{Binding StoreFile}"
                         Content="Store"
                         DockPanel.Dock="Bottom" />
-					<StackPanel Grid.Row="1" Grid.Column="0">
-						<StackPanel Orientation="Vertical">
-							<StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-								<Label Content="Meta Data:" />
-								<TextBlock
+                    <StackPanel Grid.Row="2" Grid.Column="0">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                                <Label Content="Meta Data:" />
+                                <TextBlock
                                     VerticalAlignment="Center"
                                     Text="{Binding LoadedFileMetadata}"
                                     TextWrapping="WrapWithOverflow" />
-							</StackPanel>
-							<Label VerticalAlignment="Center" Content="File Content:" />
+                            </StackPanel>
+                            <Label VerticalAlignment="Center" Content="File Content:" />
 
-							<TextBox
+                            <TextBox
                                 MinHeight="150"
                                 Margin="5,0,0,0"
                                 Text="{Binding LoadedFileContent}" />
-						</StackPanel>
-					</StackPanel>
-					<StackPanel Grid.Row="1" Grid.Column="1">
-						<StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-							<Label Content="Meta Data:" />
-							<TextBlock
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.Column="1">
+                        <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                            <Label Content="Meta Data:" />
+                            <TextBlock
                                 VerticalAlignment="Center"
                                 Text="{Binding DatabaseFileMetaData}"
                                 TextWrapping="WrapWithOverflow" />
-						</StackPanel>
-						<Label VerticalAlignment="Center" Content="Database File Content:" />
+                        </StackPanel>
+                        <Label VerticalAlignment="Center" Content="Database File Content:" />
 
-						<TextBox
+                        <TextBox
                             MinHeight="150"
                             Margin="5,0,0,0"
                             Text="{Binding DatabaseFileContent}" />
-					</StackPanel>
-				</Grid>
-			</TabItem>
-		</TabControl>
-	</DockPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
 </UserControl>

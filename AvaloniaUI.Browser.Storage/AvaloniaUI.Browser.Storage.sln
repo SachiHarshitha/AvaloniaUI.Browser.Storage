@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Pr
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaUI.Browser.Storage.Test", "..\AvaloniaUI.Browser.Storage.Test\AvaloniaUI.Browser.Storage.Test.csproj", "{683DAEEB-49AA-4961-A4EB-B221174FFBAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{994BC021-518D-4172-EB53-328538B29BD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{994BC021-518D-4172-EB53-328538B29BD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{994BC021-518D-4172-EB53-328538B29BD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{683DAEEB-49AA-4961-A4EB-B221174FFBAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{683DAEEB-49AA-4961-A4EB-B221174FFBAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{683DAEEB-49AA-4961-A4EB-B221174FFBAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{683DAEEB-49AA-4961-A4EB-B221174FFBAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

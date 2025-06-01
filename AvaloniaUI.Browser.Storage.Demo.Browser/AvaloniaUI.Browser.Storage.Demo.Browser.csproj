@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AvaloniaUI.Browser.Storage.Demo.Desktop\AvaloniaUI.Browser.Storage.Demo.Desktop.csproj" />
     <ProjectReference Include="..\AvaloniaUI.Browser.Storage.Demo\AvaloniaUI.Browser.Storage.Demo.csproj" />
     <ProjectReference Include="..\AvaloniaUI.Browser.Storage\AvaloniaUI.Browser.Storage.csproj" />
   </ItemGroup>

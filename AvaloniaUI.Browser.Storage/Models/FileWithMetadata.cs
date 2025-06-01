@@ -1,4 +1,6 @@
-﻿namespace AvaloniaUI.Browser.Storage.Models
+﻿using System.Text.Json;
+
+namespace AvaloniaUI.Browser.Storage.Models
 {
     public class FileWithMetadata
     {
@@ -10,5 +12,10 @@
         public string LastModifiedAt { get; set; } = default!;
         public string FileFormat { get; set; } = default!;
         public byte[] Data { get; set; } = default!;
+
+        public override string ToString()
+        {
+            return JsonSerializer.Serialize(this);
+        }
     }
 }

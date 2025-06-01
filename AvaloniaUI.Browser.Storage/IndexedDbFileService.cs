@@ -1,16 +1,23 @@
-﻿using Avalonia.OpenGL;
-
-using AvaloniaUI.Browser.Storage.Contracts;
-
-using System;
-using System.Runtime.InteropServices.JavaScript;
-using System.Threading.Tasks;
+﻿using AvaloniaUI.Browser.Storage.Contracts;
 using AvaloniaUI.Browser.Storage.Models;
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices.JavaScript;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace AvaloniaUI.Browser.Storage;
 
 public partial class IndexedDbFileService : IIndexedDbFileService
 {
+    /// <summary>
+    /// Defaultl constructor for IndexedDbFileService
+    /// </summary>
+    public IndexedDbFileService()
+    {
+        _ = InitializeAsync();
+    }
+
     #region Fields
 
     private const string ModuleName = "FuncIndexedDbFile";
@@ -21,24 +28,40 @@ public partial class IndexedDbFileService : IIndexedDbFileService
 
     #endregion Fields
 
-    public IndexedDbFileService()
-    {
-        _ = InitializeAsync();
-    }
-
     #region JSInterop
 
     [JSImport("saveFileToIndexedDBFromBase64", ModuleName)]
-    internal static partial Task SaveFileFromBase64Async(string dbName, int dbVersion, string storeName, string key, string base64String, string mimeType);
+    internal static partial Task SaveFileFromBase64Async(string dbName, int dbVersion, string storeName, string key,
+        string base64String, string mimeType);
 
     [JSImport("saveFileWithMetadata", ModuleName)]
-    internal static partial Task JsSaveFileWithMetadataAsync(string dbName, int dbVersion, string storeName, string key, string ase64String, string mimeType, string fileName, string createdAt, string lastModifiedAt, string fileFormat);
+    internal static partial Task JsSaveFileWithMetadataAsync(string dbName, int dbVersion, string storeName, string key,
+        string ase64String, string mimeType, string fileName, string createdAt, string lastModifiedAt,
+        string fileFormat);
 
     [JSImport("getFileFromIndexedDBAsBase64", ModuleName)]
-    internal static partial Task<string?> GetFileAsBase64Async(string dbName, int dbVersion, string storeName, string key);
+    internal static partial Task<string?> GetFileAsBase64Async(string dbName, int dbVersion, string storeName,
+        string key);
 
     [JSImport("getFileWithMetadata", ModuleName)]
-    internal static partial Task<JSObject?> JsGetFileWithMetadata(string dbName, int dbVersion, string storeName, string key);
+    internal static partial Task<JSObject?> JsGetFileWithMetadata(string dbName, int dbVersion, string storeName,
+        string key);
+
+    [JSImport("getAllKeysFromIndexedDB", ModuleName)]
+    internal static partial Task<string?> GetAllKeysFromIndexedDBAsync(string dbName, int dbVersion, string storeName);
+
+    [JSImport("getAllFileEntriesFromIndexedDB", "FuncIndexedDbFile")]
+    internal static partial Task<string?> GetAllFileEntriesFromIndexedDBJsonAsync(string dbName, int dbVersion,
+        string storeName);
+
+    [JSImport("clearStore", ModuleName)]
+    internal static partial Task<bool> JsClearStore(string dbName, string storeName, int dbVersion);
+
+    [JSImport("deleteDatabase", ModuleName)]
+    internal static partial Task<bool> JsDeleteDatabase(string dbName);
+
+    [JSImport("clearAllStores", ModuleName)]
+    internal static partial Task<bool> JsClearAllStores(string dbName, int dbVersion);
 
     #endregion JSInterop
 
@@ -63,7 +86,8 @@ public partial class IndexedDbFileService : IIndexedDbFileService
     /// <param name="data"></param>
     /// <param name="mimeType"></param>
     /// <returns></returns>
-    public async Task SaveFileAsync(string dbName, int dbVersion, string storeName, string key, byte[] data, string mimeType)
+    public async Task SaveFileAsync(string dbName, int dbVersion, string storeName, string key, byte[] data,
+        string mimeType)
     {
         _indexedDbModule ??= await JSHost.ImportAsync(ModuleName, ModulePath);
         // Convert byte array to Base64 string
@@ -85,7 +109,8 @@ public partial class IndexedDbFileService : IIndexedDbFileService
     /// <param name="author"></param>
     /// <param name="fileFormat"></param>
     /// <returns></returns>
-    public async Task SaveFileWithMetadataAsync(string dbName, int dbVersion, string storeName, string key, byte[] data, string mimeType,
+    public async Task SaveFileWithMetadataAsync(string dbName, int dbVersion, string storeName, string key, byte[] data,
+        string mimeType,
         string fileName, string createdAt, string lastModifiedAt, string fileFormat)
     {
         _indexedDbModule ??= await JSHost.ImportAsync(ModuleName, ModulePath);
@@ -123,6 +148,14 @@ public partial class IndexedDbFileService : IIndexedDbFileService
         return Convert.FromBase64String(base64);
     }
 
+    /// <summary>
+    /// Get File with Metadata Async Method
+    /// </summary>
+    /// <param name="dbName"></param>
+    /// <param name="dbVersion"></param>
+    /// <param name="storeName"></param>
+    /// <param name="key"></param>
+    /// <returns></returns>
     public async Task<FileWithMetadata?> GetFileWithMetadataAsync(
         string dbName,
         int dbVersion,
@@ -136,13 +169,6 @@ public partial class IndexedDbFileService : IIndexedDbFileService
         if (fileObject is null)
             return null;
 
-        Console.WriteLine(fileObject);
-        Console.WriteLine($"Object has property:key:{fileObject.GetPropertyAsString("fileName")}");
-        Console.WriteLine($"Object has property:key:{fileObject.GetPropertyAsString("mimeType")}");
-        Console.WriteLine($"Object has property:key:{fileObject.GetPropertyAsDouble("size")}");
-        Console.WriteLine($"Object has property:key:{fileObject.GetPropertyAsString("createdAt")}");
-        Console.WriteLine($"Object has property:key:{fileObject.GetPropertyAsString("lastModifiedAt")}");
-        Console.WriteLine($"Object has property:key:{fileObject.GetPropertyAsString("fileFormat")}");
         // Extract properties from JSObject
         var fileWithMetadata = new FileWithMetadata
         {
@@ -162,6 +188,87 @@ public partial class IndexedDbFileService : IIndexedDbFileService
         }
 
         return fileWithMetadata;
+    }
+
+    /// <summary>
+    /// Get All Keys Async Method
+    /// </summary>
+    /// <param name="dbName"></param>
+    /// <param name="dbVersion"></param>
+    /// <param name="storeName"></param>
+    /// <returns></returns>
+    public async Task<string[]?> GetAllKeysAsync(string dbName, int dbVersion, string storeName)
+    {
+        _indexedDbModule ??= await JSHost.ImportAsync(ModuleName, ModulePath);
+
+        var json = await GetAllKeysFromIndexedDBAsync(dbName, dbVersion, storeName);
+
+        return string.IsNullOrEmpty(json)
+            ? null
+            :
+            // Deserialize JSON array into string[]
+            JsonSerializer.Deserialize<string[]>(json);
+    }
+
+    /// <summary>
+    /// Get All File Entries Async Method
+    /// </summary>
+    /// <param name="dbName"></param>
+    /// <param name="dbVersion"></param>
+    /// <param name="storeName"></param>
+    /// <returns></returns>
+    public async Task<List<FileWithMetadata>?> GetAllFileEntriesAsync(string dbName, int dbVersion, string storeName)
+    {
+        _indexedDbModule ??= await JSHost.ImportAsync("FuncIndexedDbFile", "/js/FuncIndexedDbFile.js");
+
+        var json = await GetAllFileEntriesFromIndexedDBJsonAsync(dbName, dbVersion, storeName);
+
+        if (string.IsNullOrEmpty(json))
+            return null;
+
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        var items = JsonSerializer.Deserialize<List<FileWithMetadata>>(json, options);
+        // Deserialize JSON to List<FileWithMetadata>
+        return items;
+    }
+
+    /// <summary>
+    /// Clear Store Async Method
+    /// </summary>
+    /// <param name="dbName"></param>
+    /// <param name="storeName"></param>
+    /// <param name="dbVersion"></param>
+    /// <returns></returns>
+    public async Task<bool> ClearStoreAsync(string dbName, string storeName, int dbVersion)
+    {
+        _indexedDbModule ??= await JSHost.ImportAsync(ModuleName, ModulePath);
+        return await JsClearStore(dbName, storeName, dbVersion);
+    }
+
+    /// <summary>
+    /// Clear All Stores Async Method
+    /// </summary>
+    /// <param name="dbName"></param>
+    /// <param name="dbVersion"></param>
+    /// <returns></returns>
+    public async Task<bool> ClearAllStoresAsync(string dbName, int dbVersion)
+    {
+        _indexedDbModule ??= await JSHost.ImportAsync(ModuleName, ModulePath);
+        return await JsClearAllStores(dbName, dbVersion);
+    }
+
+    /// <summary>
+    /// Delete Database Async Method
+    /// </summary>
+    /// <param name="dbName"></param>
+    /// <returns></returns>
+    public async Task<bool> DeleteDatabaseAsync(string dbName)
+    {
+        _indexedDbModule ??= await JSHost.ImportAsync(ModuleName, ModulePath);
+        return await JsDeleteDatabase(dbName);
     }
 
     #endregion Public Methods

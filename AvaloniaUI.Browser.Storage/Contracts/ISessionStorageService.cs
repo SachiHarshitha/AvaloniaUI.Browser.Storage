@@ -8,39 +8,44 @@ namespace AvaloniaUI.Browser.Storage.Contracts
     public interface ISessionStorageService
     {
         /// <summary>
-        /// Source generated implementation of <c>window.sessionStorage.clear</c>.
-        /// <a href="https://developer.mozilla.org/docs/Web/API/Storage/clear"></a>
+        /// Clear all items in session storage.
         /// </summary>
+        /// <returns></returns>
         ValueTask ClearAsync();
 
         /// <summary>
-        /// Source generated implementation of <c>window.sessionStorage.getItem</c>.
-        /// <a href="https://developer.mozilla.org/docs/Web/API/Storage/getItem"></a>
+        /// Get Item Method
         /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         ValueTask<string?> GetItemAsync(string key);
 
         /// <summary>
-        /// Source generated implementation of <c>window.sessionStorage.key</c>.
-        /// <a href="https://developer.mozilla.org/docs/Web/API/Storage/key"></a>
+        /// Get Item Key by Index Method
         /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         ValueTask<string?> KeyAsync(double index);
 
         /// <summary>
-        /// Source generated implementation of <c>window.sessionStorage.removeItem</c>.
-        /// <a href="https://developer.mozilla.org/docs/Web/API/Storage/removeItem"></a>
+        /// Remove Item Method
         /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         ValueTask RemoveItemAsync(string key);
 
         /// <summary>
-        /// Source generated implementation of <c>window.sessionStorage.setItem</c>.
-        /// <a href="https://developer.mozilla.org/docs/Web/API/Storage/setItem"></a>
+        /// Set Item Value Method
         /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         ValueTask SetItemAsync(string key, string value);
 
         /// <summary>
-        /// Source generated implementation of <c>window.sessionStorage.length</c>.
-        /// <a href="https://developer.mozilla.org/docs/Web/API/Storage/length"></a>
+        /// Get Length Method
         /// </summary>
+        /// <returns></returns>
         ValueTask<double> GetLength();
     }
 }

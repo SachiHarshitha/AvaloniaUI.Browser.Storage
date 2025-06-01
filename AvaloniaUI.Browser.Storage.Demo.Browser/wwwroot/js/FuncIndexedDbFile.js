@@ -153,3 +153,43 @@ export async function getFileWithMetadata(
         getRequest.onerror = () => reject(getRequest.error);
     });
 }
+
+export async function getAllKeysFromIndexedDB(dbName, dbVersion, storeName) {
+    const db = await openDatabase(dbName, storeName, dbVersion);
+
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, "readonly");
+        const store = tx.objectStore(storeName);
+
+        const getAllKeysRequest = store.getAllKeys();
+
+        getAllKeysRequest.onsuccess = () => {
+            // Return JSON string
+            resolve(JSON.stringify(getAllKeysRequest.result));
+        };
+
+        getAllKeysRequest.onerror = () => {
+            reject(getAllKeysRequest.error);
+        };
+    });
+}
+
+export async function getAllFileEntriesFromIndexedDB(dbName, dbVersion, storeName) {
+    const db = await openDatabase(dbName, storeName, dbVersion);
+
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, "readonly");
+        const store = tx.objectStore(storeName);
+        const req = store.getAll();
+
+        req.onsuccess = () => {
+            const entries = req.result.map(entry => {
+                const {data, ...rest} = entry;
+                return rest;
+            });
+            resolve(JSON.stringify(entries));
+        };
+
+        req.onerror = () => reject(req.error);
+    });
+}

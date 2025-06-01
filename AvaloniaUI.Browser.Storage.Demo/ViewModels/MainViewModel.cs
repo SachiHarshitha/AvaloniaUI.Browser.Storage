@@ -1,10 +1,7 @@
 ﻿using Avalonia.Platform.Storage;
-
 using AvaloniaUI.Browser.Storage.Contracts;
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -16,46 +13,6 @@ namespace AvaloniaUI.Browser.Storage.Demo.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    #region Fields
-
-    private byte[] _fileContent;
-    private IStorageFile _file;
-    private readonly ISessionStorageService _sessionStorageService;
-    private readonly ILocalStorageService _localStorageService;
-    private readonly IIndexedDbFileService _indexedDbFileService;
-
-    [ObservableProperty]
-    private string _valueToSetLocalStorage = string.Empty;
-
-    [ObservableProperty]
-    private string _valueToSetSessionStorage = string.Empty;
-
-    [ObservableProperty]
-    private string _valueFromSessionStorage = string.Empty;
-
-    [ObservableProperty]
-    private string _valueFromLocalStorage = string.Empty;
-
-    [ObservableProperty]
-    private string _loadedFileContent = string.Empty;
-
-    [ObservableProperty]
-    private string _databaseFileContent = string.Empty;
-
-    [ObservableProperty]
-    private string _loadedFileMetadata = string.Empty;
-
-    [ObservableProperty]
-    private string _databaseFileMetaData = string.Empty;
-
-    [ObservableProperty]
-    private ObservableCollection<Tuple<string, object>> _sessionStorageEntries = new ObservableCollection<Tuple<string, object>>();
-
-    [ObservableProperty]
-    private ObservableCollection<Tuple<string, object>> _localStorageEntries = new ObservableCollection<Tuple<string, object>>();
-
-    #endregion Fields
-
     public MainViewModel()
     {
     }
@@ -63,7 +20,8 @@ public partial class MainViewModel : ViewModelBase
     /// <summary>
     /// Default constructor for MainViewModel.
     /// </summary>
-    public MainViewModel(IIndexedDbFileService indexedDbFileService, ISessionStorageService sessionStorageService, ILocalStorageService localStorageService)
+    public MainViewModel(IIndexedDbFileService indexedDbFileService, ISessionStorageService sessionStorageService,
+        ILocalStorageService localStorageService)
     {
         // Initialize the session storage service and local storage service.
         _sessionStorageService = sessionStorageService;
@@ -88,6 +46,9 @@ public partial class MainViewModel : ViewModelBase
         GetLocalStorageEntries();
     }
 
+    /// <summary>
+    /// Stores a value in session storage and retrieves it.
+    /// </summary>
     [RelayCommand]
     public async Task SessionStorageCommand()
     {
@@ -98,6 +59,9 @@ public partial class MainViewModel : ViewModelBase
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Stores a value in local storage and retrieves it.
+    /// </summary>
     [RelayCommand]
     public async Task LocalStorageCommand()
     {
@@ -108,6 +72,9 @@ public partial class MainViewModel : ViewModelBase
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Clear the session storage.
+    /// </summary>
     [RelayCommand]
     public async Task ClearSessionStorageAsync()
     {
@@ -116,6 +83,9 @@ public partial class MainViewModel : ViewModelBase
         SessionStorageEntries.Clear();
     }
 
+    /// <summary>
+    /// Clear the local storage.
+    /// </summary>
     [RelayCommand]
     public async Task ClearLocalStorageAsync()
     {
@@ -125,6 +95,9 @@ public partial class MainViewModel : ViewModelBase
         LocalStorageEntries.Clear();
     }
 
+    /// <summary>
+    /// Browse a file using the file picker dialog.
+    /// </summary>
     [RelayCommand]
     public async Task BrowseFile()
     {
@@ -142,39 +115,64 @@ public partial class MainViewModel : ViewModelBase
             // Open reading stream from the first file.
             _file = files[0] as IStorageFile;
             var props = await _file.GetBasicPropertiesAsync();
-            LoadedFileMetadata = $"Name: {_file.Name}, Size: {props.Size} bytes, Created On: {props.DateCreated}, Modified On: {props.DateModified}";
+            LoadedFileMetadata =
+                $"Name: {_file.Name}, Size: {props.Size} bytes, Created On: {props.DateCreated}, Modified On: {props.DateModified}";
             await using var stream = await files[0].OpenReadAsync();
             _fileContent = await ReadFully(stream);
-            LoadedFileContent = System.Text.Encoding.UTF8.GetString(_fileContent);
+            LoadedFileContent = Encoding.UTF8.GetString(_fileContent);
         }
     }
 
+    /// <summary>
+    /// Query IndexedDB for all file entries.
+    /// </summary>
+    [RelayCommand]
+    public async Task QueryIndexedDB()
+    {
+        IndexedDbEntries.Clear();
+        var entries = await _indexedDbFileService.GetAllFileEntriesAsync(dbName, 2, storeName);
+        if (entries != null)
+            foreach (var entry in entries)
+                IndexedDbEntries.Add(new Tuple<string, object>(entry.Key, entry.ToString()));
+    }
+
+    /// <summary>
+    /// Save the file to IndexedDB with metadata.
+    /// </summary>
+    /// <exception cref="InvalidOperationException"></exception>
     [RelayCommand]
     public async Task StoreFile()
     {
         DatabaseFileContent = string.Empty; // Reset the content before storing a new file
-        var dbName = "TestDB";
-        var storeName = "Test_Store";
-        var fileName = "Test_File";
+
 
         if (!(_fileContent?.Length > 0))
         {
             throw new InvalidOperationException("File content is empty. Please browse a file first.");
-            return;
         }
+
         var props = await _file.GetBasicPropertiesAsync();
+        var guid = Guid.NewGuid().ToString();
+        await _indexedDbFileService.SaveFileWithMetadataAsync(dbName, 2, storeName, guid, _fileContent,
+            MimeTypes.TextPlain, _file.Name, props.DateCreated?.ToString(), props.DateModified?.ToString(),
+            _file.Name.Split('.').Last());
 
-        await _indexedDbFileService.SaveFileWithMetadataAsync(dbName, 2, storeName, fileName, _fileContent, MimeTypes.TextPlain, _file.Name, props.DateCreated?.ToString(), props.DateModified?.ToString(), _file.Name.Split('.').Last());
-
-        var dbFile = await _indexedDbFileService.GetFileWithMetadataAsync(dbName, 2, storeName, fileName);
+        var dbFile = await _indexedDbFileService.GetFileWithMetadataAsync(dbName, 2, storeName, guid);
         if (dbFile == null)
         {
             throw new InvalidOperationException("Failed to load file from IndexedDB.");
         }
-        DatabaseFileContent = System.Text.Encoding.UTF8.GetString(dbFile.Data);
-        DatabaseFileMetaData = $"Name: {dbFile.FileName}, Size: {dbFile.Data.Length} bytes, Created On: {dbFile.CreatedAt}, Modified On: {dbFile.LastModifiedAt}, Format: {dbFile.FileFormat}";
+
+        DatabaseFileContent = Encoding.UTF8.GetString(dbFile.Data);
+        DatabaseFileMetaData =
+            $"Name: {dbFile.FileName}, Size: {dbFile.Data.Length} bytes, Created On: {dbFile.CreatedAt}, Modified On: {dbFile.LastModifiedAt}, Format: {dbFile.FileFormat}";
+        // Reload the IndexedDB entries to reflect the new file.
+        await QueryIndexedDB();
     }
 
+    /// <summary>
+    /// Get Session Storage Entries Command.
+    /// </summary>
     [RelayCommand]
     public async void GetSessionStorageEntries()
     {
@@ -198,6 +196,9 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Get Local Storage Entries Command.
+    /// </summary>
     [RelayCommand]
     public async void GetLocalStorageEntries()
     {
@@ -221,6 +222,11 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Read the entire stream into a byte array asynchronously.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
     public static async Task<byte[]> ReadFully(Stream input)
     {
         byte[] buffer = new byte[16 * 1024];
@@ -231,7 +237,48 @@ public partial class MainViewModel : ViewModelBase
             {
                 await ms.WriteAsync(buffer, 0, read);
             }
+
             return ms.ToArray();
         }
     }
+
+    #region Fields
+
+    private string dbName = "TestDB";
+    private string storeName = "Test_Store";
+    private byte[] _fileContent;
+    private IStorageFile _file;
+    private readonly ISessionStorageService _sessionStorageService;
+    private readonly ILocalStorageService _localStorageService;
+    private readonly IIndexedDbFileService _indexedDbFileService;
+
+    [ObservableProperty] private string _valueToSetLocalStorage = string.Empty;
+
+    [ObservableProperty] private string _valueToSetSessionStorage = string.Empty;
+
+    [ObservableProperty] private string _valueFromSessionStorage = string.Empty;
+
+    [ObservableProperty] private string _valueFromLocalStorage = string.Empty;
+
+    [ObservableProperty] private string _loadedFileContent = string.Empty;
+
+    [ObservableProperty] private string _databaseFileContent = string.Empty;
+
+    [ObservableProperty] private string _loadedFileMetadata = string.Empty;
+
+    [ObservableProperty] private string _databaseFileMetaData = string.Empty;
+
+    [ObservableProperty]
+    private ObservableCollection<Tuple<string, object>> _sessionStorageEntries =
+        new ObservableCollection<Tuple<string, object>>();
+
+    [ObservableProperty]
+    private ObservableCollection<Tuple<string, object>> _localStorageEntries =
+        new ObservableCollection<Tuple<string, object>>();
+
+    [ObservableProperty]
+    private ObservableCollection<Tuple<string, object>> _indexedDbEntries =
+        new ObservableCollection<Tuple<string, object>>();
+
+    #endregion Fields
 }
