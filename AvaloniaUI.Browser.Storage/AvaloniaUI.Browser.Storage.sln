@@ -16,9 +16,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Pr
 		..\.gitignore = ..\.gitignore
 		..\LICENSE = ..\LICENSE
 		..\README.md = ..\README.md
+		..\README_Nuget.md = ..\README_Nuget.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaUI.Browser.Storage.Tests", "..\AvaloniaUI.Browser.Storage.Tests\AvaloniaUI.Browser.Storage.Tests.csproj", "{037EF8BB-4DCF-400D-9565-E9E0F552FA69}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaWASM.Storage", "..\AvaloniaWASM.Storage\AvaloniaWASM.Storage.csproj", "{C36A798E-CA67-54CD-33C9-3D2748645C89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +49,10 @@ Global
 		{037EF8BB-4DCF-400D-9565-E9E0F552FA69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{037EF8BB-4DCF-400D-9565-E9E0F552FA69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{037EF8BB-4DCF-400D-9565-E9E0F552FA69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C36A798E-CA67-54CD-33C9-3D2748645C89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C36A798E-CA67-54CD-33C9-3D2748645C89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C36A798E-CA67-54CD-33C9-3D2748645C89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C36A798E-CA67-54CD-33C9-3D2748645C89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

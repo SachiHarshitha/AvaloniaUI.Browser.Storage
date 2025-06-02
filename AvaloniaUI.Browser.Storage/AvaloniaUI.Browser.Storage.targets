@@ -1,0 +1,8 @@
+﻿<Project>
+	<Target Name="CopyFiles" BeforeTargets="Build">
+		<ItemGroup>
+			<File Include="$(MSBuildThisFileDirectory)..\contentFiles\**\*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(File)" Condition="'$(TargetFramework)' != '' AND $(TargetFramework.Contains('-browser'))" DestinationFolder="$(ProjectDir)\wwwroot\js\" />
+	</Target>
+</Project>
