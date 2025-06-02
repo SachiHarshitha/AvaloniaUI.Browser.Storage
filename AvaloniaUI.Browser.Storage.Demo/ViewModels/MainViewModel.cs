@@ -1,5 +1,4 @@
 ﻿using Avalonia.Platform.Storage;
-using AvaloniaUI.Browser.Storage.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -8,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AvaloniaWASM.Storage.Contracts;
 
 namespace AvaloniaUI.Browser.Storage.Demo.ViewModels;
 
@@ -144,7 +144,6 @@ public partial class MainViewModel : ViewModelBase
     public async Task StoreFile()
     {
         DatabaseFileContent = string.Empty; // Reset the content before storing a new file
-
 
         if (!(_fileContent?.Length > 0))
         {

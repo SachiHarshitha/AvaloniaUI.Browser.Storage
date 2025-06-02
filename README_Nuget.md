@@ -1,8 +1,5 @@
 # AvaloniaWASM.Storage
 
-[![NuGet](https://img.shields.io/nuget/v/AvaloniaWASM.Storage.svg)](https://www.nuget.org/packages/AvaloniaWASM.Storage/)
-[![Github All Releases](https://img.shields.io/nuget/dt/AvaloniaWASM.Storage.svg)]()
-
 This library provides a simple way to use browser storage in AvaloniaUI applications. It supports both local, session storage as well as IndexedDB, allowing you to store key-value pairs that persist across sessions or only for the duration of the page load.
 The IndexedDB support is useful for storing larger files or structured data.
 
@@ -12,40 +9,11 @@ The IndexedDB support is useful for storing larger files or structured data.
 | -------- | ------- |
 | ![image](https://github.com/user-attachments/assets/32aa25af-08d2-4a3b-ad2d-8ea231c3e12d)  | ![image](https://github.com/user-attachments/assets/4dcf76ee-dd3d-436b-bf8f-c08f6fe7b25d)    |
 
-
-
 ## How to Use
 
-Currently, the library is under constant development. To use it, you can clone the repository and reference the project in your AvaloniaUI application or can install the nuget package.
+1. Install the Nuget Package (Both in the base and startup projects).
 
-Nuget Package: [AvaloniaWASM.Storage](https://www.nuget.org/packages/AvaloniaWASM.Storage/)
-
-1. Clone the repository:
-```bash
-   git clone https://github.com/SachiHarshitha/AvaloniaWASM.Storage.git
- ```
-
-2. Add a reference to the `AvaloniaWASM.Storage` project in your AvaloniaUI application (Both in the base and startup projects).
-
-3. Add the following section to the Browser startup project (File : xxxx.Browser.csproj).
-
-```xml
-<!--Section :Direct Reference, Add following section if you refer the project directly-->
-	<ItemGroup>
-		<JsFiles Include="..\AvaloniaWASM.Storage\wwwroot\js\**\*.*" />
-	</ItemGroup>
-
-	<Target Name="CopyJsFilesBeforeBuild" BeforeTargets="Build">
-		<Message Importance="high" Text="Copying JS files to wwwroot..." />
-		<Copy
-			SourceFiles="@(JsFiles)"
-			DestinationFolder="$(MSBuildProjectDirectory)\wwwroot\js\%(RecursiveDir)"
-			SkipUnchangedFiles="true" />
-	</Target>
-<!-- End Section-->
-```
-
-4. Add the required JSScript loading to your crossplatform project (File : xxxx.csproj).
+2. Add the required JSScript loading to your crossplatform project (File : xxxx.csproj).
 
 ```csharp
 
@@ -69,7 +37,7 @@ Nuget Package: [AvaloniaWASM.Storage](https://www.nuget.org/packages/AvaloniaWAS
 
 ```
 
-5. Use the `LocalStorage` and `SessionStorage` classes to store and retrieve data in your AvaloniaUI application.
+3. Use the `LocalStorage` and `SessionStorage` classes to store and retrieve data in your AvaloniaUI application.
 ```csharp
 	using AvaloniaWASM.Storage;
 
@@ -95,3 +63,5 @@ Nuget Package: [AvaloniaWASM.Storage](https://www.nuget.org/packages/AvaloniaWAS
 	await IndexedDbFileService.SaveFileAsync(dbName, storeName, fileName, _fileContent, "text/plain");
 	var filefromDB = await IndexedDbFileService.LoadFileAsBase64Async(dbName, storeName, fileName);
 ```
+
+4. Build startup project to ensure the JavaScript files are copied to the correct location (./wwwroot/js/**).

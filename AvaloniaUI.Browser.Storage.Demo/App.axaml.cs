@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using System;
 using System.Runtime.InteropServices.JavaScript;
+using AvaloniaWASM.Storage;
 
 namespace AvaloniaUI.Browser.Storage.Demo;
 

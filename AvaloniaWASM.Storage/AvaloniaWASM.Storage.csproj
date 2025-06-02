@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<StaticWebAssetBasePath>_content/AvaloniaWASM.Storage</StaticWebAssetBasePath>
+		<IncludeSymbols>False</IncludeSymbols>
+		<PackageIcon>Icon.png</PackageIcon>
+		<RepositoryUrl>https://github.com/SachiHarshitha/AvaloniaWASM.Storage</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageReadmeFile>README_Nuget.md</PackageReadmeFile>
+		<AssemblyVersion></AssemblyVersion>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Title>AvaloniaUI Browser Storage Functions</Title>
+		<Description>This library implements a simple storage adapter which the avalonia WASM apps can use to interact with the Browser storage.</Description>
+		<PackageProjectUrl>https://github.com/SachiHarshitha/AvaloniaWASM.Storage</PackageProjectUrl>
+		<PackageTags>avalonia;browser;wasm;storage;data</PackageTags>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<Copyright>Copyright (c) 2025 Sachith Liyanagama</Copyright>
+		<Authors>Sachith Liyanagama</Authors>
+	</PropertyGroup>
+	<ItemGroup>
+		<Content Include="wwwroot\**" Pack="true" PackagePath="contentFiles\any\wwwroot\" CopyToOutputDirectory="Always" />
+		<None Include="..\LICENSE">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
+		<None Include="AvaloniaWASM.Storage.targets" Pack="true" PackagePath="build/AvaloniaWASM.Storage.targets" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\Icon.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\README_Nuget.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia.Browser" Version="11.3.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.5" />
+	</ItemGroup>
+</Project>

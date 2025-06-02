@@ -3,25 +3,27 @@
     <TargetFramework>net9.0-browser</TargetFramework>
     <OutputType>Exe</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+
   </PropertyGroup>
 
-<!--Section :Direct Reference, Add following section if you refer the project directly-->
-	<ItemGroup>
+	<!--Section :Direct Reference, Add following section if you refer the project directly-->
+	<!--<ItemGroup>
 		<JsFiles Include="..\AvaloniaUI.Browser.Storage\wwwroot\js\**\*.*" />
 	</ItemGroup>
 
 	<Target Name="CopyJsFilesBeforeBuild" BeforeTargets="Build">
 		<Message Importance="high" Text="Copying JS files to wwwroot..." />
 		<Copy SourceFiles="@(JsFiles)" DestinationFolder="$(MSBuildProjectDirectory)\wwwroot\js\%(RecursiveDir)" SkipUnchangedFiles="true" />
-	</Target>
+	</Target>-->
 <!-- End Section-->
 	<ItemGroup>
     <PackageReference Include="Avalonia.Browser" Version="11.3.0" />
+    <PackageReference Include="AvaloniaWASM.Storage" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AvaloniaUI.Browser.Storage.Demo\AvaloniaUI.Browser.Storage.Demo.csproj" />
-    <ProjectReference Include="..\AvaloniaUI.Browser.Storage\AvaloniaUI.Browser.Storage.csproj" />
   </ItemGroup>
 
   
